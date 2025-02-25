@@ -39,7 +39,7 @@ public partial class Product
     [InverseProperty("Product")]
     public virtual ICollection<LineItem> LineItems { get; set; } = new List<LineItem>();
 
-    [ForeignKey("VendorId")]
-    [InverseProperty("Products")]
-    public virtual Vendor Vendor { get; set; } = null!;
+    //[ForeignKey("VendorId")]
+    //[InverseProperty("Products")]
+    public Vendor? Vendor { get; set; } = null!;
 }

@@ -51,7 +51,7 @@ public partial class Request
     [InverseProperty("Request")]
     public virtual ICollection<LineItem> LineItems { get; set; } = new List<LineItem>();
 
-    [ForeignKey("UserId")]
-    [InverseProperty("Requests")]
-    public virtual User User { get; set; } = null!;
+    //[ForeignKey("UserId")]
+    //[InverseProperty("Requests")]
+    public User? User { get; set; } = null!;
 }

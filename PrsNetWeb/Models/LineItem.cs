@@ -22,11 +22,11 @@ public partial class LineItem
 
     public int Quantity { get; set; }
 
-    [ForeignKey("ProductId")]
-    [InverseProperty("LineItems")]
-    public virtual Product Product { get; set; } = null!;
+    //[ForeignKey("ProductId")]
+    //[InverseProperty("LineItems")]
+    public Product? Product { get; set; } = null!;
 
-    [ForeignKey("RequestId")]
-    [InverseProperty("LineItems")]
-    public virtual Request Request { get; set; } = null!;
+    //[ForeignKey("RequestId")]
+    //[InverseProperty("LineItems")]
+    public Request? Request { get; set; } = null!;
 }
