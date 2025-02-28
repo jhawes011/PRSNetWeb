@@ -16,7 +16,7 @@ public partial class Request
     [Column("UserID")]
     public int UserId { get; set; }
 
-    [StringLength(20)]
+    [StringLength(50)]
     [Unicode(false)]
     public string RequestNumber { get; set; } = null!;
 

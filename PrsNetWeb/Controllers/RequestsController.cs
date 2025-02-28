@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrsNetWeb.Models;
 
 namespace PrsNetWeb.Controllers
@@ -101,8 +102,60 @@ namespace PrsNetWeb.Controllers
 
             return NoContent();
         }
+		
+		[HttpPost("createrequest")]
+		public async Task<IActionResult> CreateRequest(RequestForm requestForm)
+		{
+			if (requestForm == null)
+			{
+				return BadRequest("Invalid request data.");
+			}
 
-        private bool RequestExists(int id)
+			var newRequest = new Request
+			{
+				UserId = requestForm.UserId, //********HELP Assigned from signed-in user
+				Description = requestForm.Description,
+				Justification = requestForm.Justification,
+				DateNeeded = requestForm.DateNeeded,
+				DeliveryMode = requestForm.DeliveryMode,
+
+				                                 // Backend completed fields
+				RequestNumber = await GenerateRequestNumber(),
+				Status = "NEW",
+				Total = 0.0m,
+				SubmittedDate = DateTime.UtcNow
+			};
+
+			_context.Requests.Add(newRequest);
+			await _context.SaveChangesAsync();
+
+			return Ok(new
+			{
+				message = "---Request created---",
+				requestId = newRequest.Id,
+				requestNumber = newRequest.RequestNumber
+			});
+		}
+		private async Task<string> GenerateRequestNumber()
+		{
+			string dateSection = DateTime.UtcNow.ToString("yyMMdd");
+			string prefix = "R";
+			int nextRequestNum = 1;
+			var newestRequest = await _context.Requests
+											  .OrderByDescending(r => r.RequestNumber)
+											  .FirstOrDefaultAsync();
+			if (newestRequest != null)
+			{
+				string newestRequestNumStr = newestRequest.RequestNumber.Substring(7, 4);
+				if (int.TryParse(newestRequestNumStr, out int newestRequestNum))
+				{
+					nextRequestNum = newestRequestNum + 1;
+				}
+			}
+			string requestNumber = $"{prefix}{dateSection}{nextRequestNum:D4}";
+			return requestNumber;
+		}
+		private bool RequestExists(int id)
         {
             return _context.Requests.Any(e => e.Id == id);
         }
