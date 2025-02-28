@@ -35,7 +35,7 @@ namespace PrsNetWeb.Controllers
         {
             var lineItem = await _context.LineItems.Include(l => l.Product)
 												   .Include(l => l.Request)
-												   .FirstOrDefaultAsync();
+												   .FirstOrDefaultAsync(l => l.Id == id);
 
 			if (lineItem == null)
             {

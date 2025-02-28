@@ -33,7 +33,7 @@ namespace PrsNetWeb.Controllers
         public async Task<ActionResult<Request>> GetRequest(int id)
         {
             var request = await _context.Requests.Include(r => r.User)
-												 .FirstOrDefaultAsync();
+												 .FirstOrDefaultAsync(r => r.Id == id);
 
 
 			if (request == null)
