@@ -76,16 +76,7 @@ namespace PrsNetWeb.Controllers
             return NoContent();
         }
 
-        // POST: api/Requests
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Request>> PostRequest(Request request)
-        {
-            _context.Requests.Add(request);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetRequest", new { id = request.Id }, request);
-        }
+       
 
         // DELETE: api/Requests/5
         [HttpDelete("{id}")]
@@ -103,7 +94,7 @@ namespace PrsNetWeb.Controllers
             return NoContent();
         }
 		
-		[HttpPost("createrequest")]
+		[HttpPost]
 		public async Task<IActionResult> CreateRequest(RequestForm requestForm)
 		{
 			if (requestForm == null)
