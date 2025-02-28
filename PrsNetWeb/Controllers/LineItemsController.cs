@@ -44,10 +44,26 @@ namespace PrsNetWeb.Controllers
 
             return lineItem;
         }
+		// GET: api/LineItems/lines-for-req/{reqID}
+		[HttpGet("lines-for-req/{reqID}")]
+		public async Task<ActionResult<IEnumerable<LineItem>>> GetLineItemsByRequestId(int reqID)
+		{
+			var lineItems = await _context.LineItems.Include(l => l.Product)
+														.Include(l => l.Request)
+														.Where(l => l.RequestId == reqID)
+														.ToListAsync();
 
-        // PUT: api/LineItems/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+			if (lineItems == null || !lineItems.Any())
+			{
+				return NotFound();
+			}
+
+			return lineItems;
+		}
+
+		// PUT: api/LineItems/5
+		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+		[HttpPut("{id}")]
         public async Task<IActionResult> PutLineItem(int id, LineItem lineItem)
         {
             if (id != lineItem.Id)
