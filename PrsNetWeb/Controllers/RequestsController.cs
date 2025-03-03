@@ -128,7 +128,7 @@ namespace PrsNetWeb.Controllers
 				return NotFound();
 			}
 
-			request.Status = request.Total < 50? "APPROVED" : "REVIEW";
+			request.Status = request.Total <= 50? "APPROVED" : "REVIEW";
 			request.SubmittedDate = DateTime.Now;
 
 			_context.Entry(request).State = EntityState.Modified;
