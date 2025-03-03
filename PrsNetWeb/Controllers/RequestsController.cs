@@ -73,18 +73,20 @@ namespace PrsNetWeb.Controllers
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteRequest(int id)
 		{
-			var request = await _context.Requests.FindAsync(id);
+			//var request = await _context.Requests.FindAsync(id);
+			var request = await _context.Requests.Include(r => r.LineItems).FirstOrDefaultAsync(r => r.Id == id);
 			if (request == null)
 			{
 				return NotFound();
 			}
+			_context.LineItems.RemoveRange(request.LineItems);
 			_context.Requests.Remove(request);
 			await _context.SaveChangesAsync();
 			return NoContent();
 		}
 		// POST
 		[HttpPost]
-		public async Task<IActionResult> CreateRequest(RequestForm requestForm)
+		public async Task<IActionResult> CreateRequest(RequestFormDTO requestForm)
 		{
 			if (requestForm == null)
 			{
@@ -98,7 +100,7 @@ namespace PrsNetWeb.Controllers
 				DateNeeded = requestForm.DateNeeded,
 				DeliveryMode = requestForm.DeliveryMode,
 
-				// Backend completed fields
+				
 				RequestNumber = await GenerateRequestNumber(),
 				Status = "NEW",
 				Total = 0.0m,
@@ -205,6 +207,7 @@ namespace PrsNetWeb.Controllers
 
 			return NoContent();
 		}
+		//PUT review reject
 		[HttpPut("reject/{id}")]
 		public async Task<IActionResult> RejectRequest(int id, [FromBody] RequestDenyDTO requestDenyDTO)
 		{
