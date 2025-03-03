@@ -21,6 +21,7 @@ public partial class LineItem
     public int ProductId { get; set; }
 
     public int Quantity { get; set; }
+	
 
     //[ForeignKey("ProductId")]
     //[InverseProperty("LineItems")]
