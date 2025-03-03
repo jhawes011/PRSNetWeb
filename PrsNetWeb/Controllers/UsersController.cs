@@ -108,16 +108,7 @@ namespace PrsNetWeb.Controllers
 				return NotFound("Invalid username / password combo. Please try again.");
 			}
 
-			return Ok(new
-			{
-				message = "---Login successful---",
-				user = new
-				{
-					
-					username = user.Username,
-					
-				}
-			});
+			return Ok(user);
 		}
 		private bool UserExists(int id)
         {

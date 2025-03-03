@@ -7,8 +7,8 @@
 		public string Justification { get; set; }
 		public DateOnly DateNeeded { get; set; }
 		public string DeliveryMode { get; set; }
-		public string Status { get; set; }
-		public int Total { get; set; }
+
 		
+
 	}
 }

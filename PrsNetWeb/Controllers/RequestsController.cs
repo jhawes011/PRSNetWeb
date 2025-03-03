@@ -108,12 +108,7 @@ namespace PrsNetWeb.Controllers
 			};
 			_context.Requests.Add(newRequest);
 			await _context.SaveChangesAsync();
-			return Ok(new
-			{
-				message = "---Request created---",
-				requestId = newRequest.Id,
-				requestNumber = newRequest.RequestNumber
-			});
+			return Ok(requestForm);
 		}
 
 
