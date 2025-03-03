@@ -76,7 +76,8 @@ namespace PrsNetWeb.Controllers
             try
             {
                 await _context.SaveChangesAsync();
-            }
+				RecalculateLineItemTotal(lineItem.RequestId);
+			}
             catch (DbUpdateConcurrencyException)
             {
                 if (!LineItemExists(id))
@@ -99,29 +100,46 @@ namespace PrsNetWeb.Controllers
         {
             _context.LineItems.Add(lineItem);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetLineItem", new { id = lineItem.Id }, lineItem);
+			RecalculateLineItemTotal(lineItem.RequestId);
+			return CreatedAtAction("GetLineItem", new { id = lineItem.Id }, lineItem);
         }
 
-        // DELETE: api/LineItems/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLineItem(int id)
-        {
-            var lineItem = await _context.LineItems.FindAsync(id);
-            if (lineItem == null)
-            {
-                return NotFound();
-            }
+		// DELETE: api/LineItems/5
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteLineItem(int id)
+		{
+			var lineItem = await _context.LineItems.FindAsync(id);
+			if (lineItem == null)
+			{
+				return NotFound();
+			}
 
-            _context.LineItems.Remove(lineItem);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
+			_context.LineItems.Remove(lineItem);
+			await _context.SaveChangesAsync();
+			RecalculateLineItemTotal(lineItem.RequestId);
+			return NoContent();
+		}
 
         private bool LineItemExists(int id)
         {
             return _context.LineItems.Any(e => e.Id == id);
         }
-    }
+		
+		private void RecalculateLineItemTotal(int reqId)
+		{
+			var request = _context.Requests
+								  .Include(r => r.LineItems)
+								  .ThenInclude(li => li.Product)
+								  .FirstOrDefault(r => r.Id == reqId);
+
+			if (request == null) return;
+
+			request.Total = request.LineItems.Sum(li => li.Quantity * (li.Product?.Price ?? 0));
+			
+			_context.SaveChanges();
+		}
+
+		
+		
+	}
 }
