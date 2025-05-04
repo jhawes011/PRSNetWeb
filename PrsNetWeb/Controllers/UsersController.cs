@@ -98,10 +98,12 @@ namespace PrsNetWeb.Controllers
 
             return NoContent();
         }
+		// LOGIN: api/users/login
 		[HttpPost("login")]
 		public async Task<ActionResult<User>> Login(UserLogin userLogin)
 		{
-			var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == userLogin.Username && u.Password == userLogin.Password);
+			//nullifyAndSetId(user)
+			var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userLogin.UserName && u.Password == userLogin.Password);
 
 			if (user == null)
 			{
@@ -110,6 +112,22 @@ namespace PrsNetWeb.Controllers
 
 			return Ok(user);
 		}
+
+		private void nullifyAndSetId(User? user)
+		{
+			Console.WriteLine("User: " + user);
+			if (user != null)
+			{
+				user.UserName = null;
+				user.Password = null;
+				user.FirstName = null;
+				user.LastName = null;
+				user.PhoneNumber = null;
+				user.Email = null;
+				user.Id = 0;
+			}
+		}
+
 		private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);

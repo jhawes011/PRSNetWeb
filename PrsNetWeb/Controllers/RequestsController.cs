@@ -86,31 +86,44 @@ namespace PrsNetWeb.Controllers
 		}
 		// POST
 		[HttpPost]
-		public async Task<IActionResult> CreateRequest(RequestFormDTO requestForm)
+		public async Task<ActionResult<Request>> CreateRequest(Request request)
 		{
-			if (requestForm == null)
+			if (!ModelState.IsValid)
 			{
-				return BadRequest("Invalid request data.");
+				return BadRequest(ModelState);
 			}
+
 			var newRequest = new Request
 			{
-				UserId = requestForm.UserId, //********Assigned from signed-in user
-				Description = requestForm.Description,
-				Justification = requestForm.Justification,
-				DateNeeded = requestForm.DateNeeded,
-				DeliveryMode = requestForm.DeliveryMode,
-
-				
+				UserId = request.UserId,
+				Description = request.Description,
+				Justification = request.Justification,
+				DateNeeded = request.DateNeeded,
+				DeliveryMode = request.DeliveryMode,
 				RequestNumber = await GenerateRequestNumber(),
 				Status = "NEW",
 				Total = 0.0m,
 				SubmittedDate = DateTime.UtcNow
 			};
+			nullifyAndSetId(request);
 			_context.Requests.Add(newRequest);
 			await _context.SaveChangesAsync();
-			return Ok(requestForm);
-		}
 
+			return CreatedAtAction("GetRequest", new { id = newRequest.Id }, newRequest);
+		}
+		private void nullifyAndSetId(Request request)
+		{
+			Console.WriteLine("Req Nullify: Req: " + request.ToString());
+			if (request != null)
+			{
+				if (request.Id == 0)
+				{
+					request.UserId = request.User.Id;
+				}
+				request = null;
+			}
+			
+		}
 
 
 		// POST /api/requests/submit-review/{id}

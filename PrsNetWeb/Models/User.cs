@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace PrsNetWeb.Models;
 
 [Table("User")]
-[Index("Username", Name = "UC_Username", IsUnique = true)]
+[Index("UserName", Name = "UC_UserName", IsUnique = true)]
 public partial class User
 {
     [Key]
@@ -16,7 +16,7 @@ public partial class User
 
     [StringLength(20)]
     [Unicode(false)]
-    public string Username { get; set; } = null!;
+    public string UserName { get; set; } = null!;
 
     [StringLength(10)]
     [Unicode(false)]

@@ -19,12 +19,22 @@ namespace PrsNetWeb
 			builder.Services.AddDbContext<PRSDBContext>(
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("PRSDBConnectionString"))
 				);
+			builder.Services.AddCors(options =>
+			{
+				options.AddPolicy("AllowAngularApp",
+					builder => builder.WithOrigins("http://localhost:4200")
+									  .AllowAnyHeader()
+									  .AllowAnyMethod());
+			});
+
 
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
+			app.UseCors("AllowAngularApp");
 			app.UseStaticFiles();
 			app.UseHttpsRedirection();
+			
 			app.UseAuthorization();
 
 
